@@ -51,6 +51,7 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logout(undefined));
   };
+  
   return (
     <nav className="bg-background border-b">
       <div className="max-w-7xl mx-auto ">

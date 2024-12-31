@@ -19,7 +19,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { useGetUserPostsQuery } from "@/redux/features/products/productApi";
 import { useGetUserProfileQuery } from "@/redux/features/users/userApi";
 import { TPost } from "@/types/postType";
-import { useCommentsCountsForAllPostsQuery } from "@/redux/features/comments/commentApi";
+import { useCommentsCountsForAllPostsQuery } from "@/redux/features/reviews/reviewsApi";
 import { TCommentCounts } from "@/types/commentCountsType";
 import Link from "next/link";
 

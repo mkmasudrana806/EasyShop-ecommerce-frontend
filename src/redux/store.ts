@@ -13,7 +13,7 @@ import {
 import userSlice from "./features/users/userSlice";
 import filterSlice from "./features/products/filterSlice";
 import baseApi from "./api/baseApi";
-import commentSlice from "./features/comments/commentsSlice";
+import commentSlice from "./features/reviews/reviewsSlice";
 import storage from "./createWebStorage";
 // redux persistor
 const persistConfig = {

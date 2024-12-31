@@ -1,3 +1,5 @@
+import { TVendor } from "./vendorType";
+
 export type TProduct = {
   _id: string;
   name: string;
@@ -8,9 +10,9 @@ export type TProduct = {
   tags: string[];
   inventoryCount: number;
   discount: number;
-  vendor: string;
+  vendor: TVendor;
   flashSale?: boolean;
-  flashSalePrice?: number;
+  flashSalePrice: number;
   featured: boolean;
   isDeleted: boolean;
 };

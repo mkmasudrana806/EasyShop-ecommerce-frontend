@@ -80,14 +80,14 @@ const LoginPage = () => {
         router.push("/");
       }, 1000);
     } catch (err) {
-      (err as ErrorResponse).data.errorSources.forEach((err) => {
+      (err as ErrorResponse).data?.errorSources?.forEach((err) => {
         setError((prevErrors) => [...prevErrors, err.message]);
       });
     }
   };
 
   return (
-    <div className="container max-w-md mx-auto mt-8">
+    <div className="container max-w-md mx-auto my-8">
       <Card>
         <CardHeader>
           <CardTitle>

@@ -29,7 +29,10 @@ export function TopNavigation() {
           <TabsList>
             {navItems.map((item) => (
               <TabsTrigger key={item.href} value={item.href} asChild>
-                <Link href={item.href} className="flex items-center space-x-2">
+                <Link
+                  href={item.href}
+                  className="flex items-center hover:text-blue-600 space-x-2"
+                >
                   <item.icon className="h-4 w-4" />
                   <span>{item.name}</span>
                 </Link>
