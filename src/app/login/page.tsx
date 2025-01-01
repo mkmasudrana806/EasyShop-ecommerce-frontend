@@ -1,6 +1,6 @@
 "use client";
 import { setCookie } from "cookies-next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,21 +14,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import verifyToken from "@/utils/verifyToken";
 import { TUser } from "@/types/userType";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
 import SuccessAlert from "@/components/message/SuccessAlert";
 import ErrorAlert from "@/components/message/ErrorAlert";
 import { ErrorResponse } from "@/types/ErrorResponse";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Url } from "next/dist/shared/lib/router/router";
+import Loading from "@/components/message/Loading";
 
 // ------------- login page  --------------------
-const LoginPage = () => {
+function LoginPage() {
   // ----------- redux --------------------
   const dispatch = useAppDispatch();
   const [login] = useLoginMutation();
+  const userId = useAppSelector((state) => state.auth.user?.userId);
 
   // ---------- react   --------------------
   const [formData, setFormData] = useState({
@@ -39,15 +43,26 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isRedirecting, setIsRedirecting] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // ----------- handle change input ----------------
+  const from = searchParams.get("from") || "/";
+
+  // Prevent login page from rendering if user is logged in
+  useEffect(() => {
+    if (userId) {
+      router.replace(from);
+    } else {
+      setIsRedirecting(false); // Allow rendering if not logged in
+    }
+  }, [from, userId, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ----------------- validation form
   const validateForm = () => {
     if (!formData.email.trim())
       setError((prev) => [...prev, "Email is required"]);
@@ -56,11 +71,10 @@ const LoginPage = () => {
     if (!formData.password)
       setError((prev) => [...prev, "Password is required"]);
 
-    return error.length > 0 ? false : true;
+    return error.length === 0;
   };
 
-  // handle submit form
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -68,14 +82,12 @@ const LoginPage = () => {
     try {
       const result: any = await login(formData).unwrap();
 
-      const user = verifyToken(result?.data?.data?.accessToken) as TUser;
-      dispatch(setUser({ user, token: result?.data?.data?.accessToken }));
+      const user = verifyToken(result?.data?.accessToken) as TUser;
+      dispatch(setUser({ user, token: result?.data?.accessToken }));
 
-      // Set a persistent cookie for user role, expires in 1 year
       setCookie("role", user.role, { maxAge: 60 * 60 * 24 * 365, path: "/" });
 
       setSuccessMessage("Login successful! Redirecting to home page...");
-      setIsLoading(false);
       setTimeout(() => {
         router.push("/");
       }, 1000);
@@ -83,8 +95,15 @@ const LoginPage = () => {
       (err as ErrorResponse).data?.errorSources?.forEach((err) => {
         setError((prevErrors) => [...prevErrors, err.message]);
       });
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // initial render show this message if user is already logged in
+  if (isRedirecting) {
+    return null;
+  }
 
   return (
     <div className="container max-w-md mx-auto my-8">
@@ -99,7 +118,7 @@ const LoginPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -147,6 +166,6 @@ const LoginPage = () => {
       </Card>
     </div>
   );
-};
+}
 
 export default LoginPage;

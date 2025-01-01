@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 export type TUser = {
-  name: string;
   userId: string;
+  name: string;
   email: string;
+  profilePicture: string;
   role: string;
-  premiumAccess: boolean;
-  isVerified: boolean;
   iat: number;
   exp: number;
-  profilePicture: string;
 };
+
 type TAuthState = {
   user: null | TUser;
   token: null | string;

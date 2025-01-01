@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,14 +30,16 @@ import { ErrorResponse } from "@/types/ErrorResponse";
 import ErrorAlert from "@/components/message/ErrorAlert";
 import SuccessAlert from "@/components/message/SuccessAlert";
 import { TUser } from "@/types/userType";
+import { useAppSelector } from "@/redux/hooks";
 
 const RegisterPage = () => {
   // --------------- redux ---------------
+  const userId = useAppSelector((state) => state.auth.user?.userId);
   const [registerVendor] = useRegisterVendorMutation();
   const [registerUser] = useRegisterUserMutation();
 
   // --------------- react ---------------
-  const [user, setUser] = useState<Partial<TUser>>({
+  const [newUser, setNewUser] = useState<Partial<TUser>>({
     name: "",
     email: "",
     age: "",
@@ -61,7 +63,25 @@ const RegisterPage = () => {
   const [error, setError] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState("");
 
+  // for redicting user to the previous route if already logged in
+  const [isRedirecting, setIsRedirecting] = useState(true);
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from") || "/";
   const router = useRouter();
+
+  // Prevent login page from rendering if user is logged in
+  useEffect(() => {
+    if (userId) {
+      router.replace(from);
+    } else {
+      setIsRedirecting(false); // Allow rendering if not logged in
+    }
+  }, [from, userId, router]);
+
+  // initial render show this message if user is already logged in
+  if (isRedirecting) {
+    return null;
+  }
 
   // ------------ handle file upload -----------------------
   const handleFileChange = (event: any) => {
@@ -74,11 +94,11 @@ const RegisterPage = () => {
   };
 
   // ------------- handle register -------------
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError([]);
 
-    if (user.password !== confirmPassword) {
+    if (newUser.password !== confirmPassword) {
       setError(["Passwords do not match"]);
       return;
     }
@@ -90,8 +110,8 @@ const RegisterPage = () => {
 
     try {
       const vendorData = {
-        userData: {
-          ...user,
+        user: {
+          ...newUser,
         },
         ...vendor,
       };
@@ -99,9 +119,9 @@ const RegisterPage = () => {
 
       // if register as user
       if (role === "user" && step === 1) {
-        const { userData } = vendorData;
+        const { user } = vendorData;
         data.append("file", file);
-        data.append("data", JSON.stringify(userData));
+        data.append("data", JSON.stringify(user));
 
         setIsLoading(true);
         await registerUser(data).unwrap();
@@ -140,7 +160,7 @@ const RegisterPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleRegister}>
             <div className="space-y-4">
               {step === 1 && (
                 <>
@@ -151,9 +171,9 @@ const RegisterPage = () => {
                       id="name"
                       type="text"
                       placeholder="Enter your full name"
-                      value={user.name}
+                      value={newUser.name}
                       onChange={(e) =>
-                        setUser({ ...user, name: e.target.value })
+                        setNewUser({ ...newUser, name: e.target.value })
                       }
                       required
                     />
@@ -165,9 +185,9 @@ const RegisterPage = () => {
                       id="email"
                       type="email"
                       placeholder="Enter your email"
-                      value={user.email}
+                      value={newUser.email}
                       onChange={(e) =>
-                        setUser({ ...user, email: e.target.value })
+                        setNewUser({ ...newUser, email: e.target.value })
                       }
                       required
                     />
@@ -181,9 +201,9 @@ const RegisterPage = () => {
                       min={0}
                       max={150}
                       placeholder="Enter your age"
-                      value={user.age}
+                      value={newUser.age}
                       onChange={(e) =>
-                        setUser({ ...user, age: Number(e.target.value) })
+                        setNewUser({ ...newUser, age: Number(e.target.value) })
                       }
                       required
                     />
@@ -192,10 +212,10 @@ const RegisterPage = () => {
                   <div>
                     <Label htmlFor="gender">Gender</Label>
                     <Select
-                      value={user.gender}
+                      value={newUser.gender}
                       onValueChange={(value) =>
-                        setUser({
-                          ...user,
+                        setNewUser({
+                          ...newUser,
                           gender: value as "male" | "female" | "others",
                         })
                       }
@@ -218,9 +238,9 @@ const RegisterPage = () => {
                       id="contact"
                       type="number"
                       placeholder="Enter your contact"
-                      value={user.contact}
+                      value={newUser.contact}
                       onChange={(e) =>
-                        setUser({ ...user, contact: e.target.value })
+                        setNewUser({ ...newUser, contact: e.target.value })
                       }
                       required
                     />
@@ -232,9 +252,9 @@ const RegisterPage = () => {
                       id="address"
                       type="text"
                       placeholder="Enter your address"
-                      value={user.address}
+                      value={newUser.address}
                       onChange={(e) =>
-                        setUser({ ...user, address: e.target.value })
+                        setNewUser({ ...newUser, address: e.target.value })
                       }
                       required
                     />
@@ -246,9 +266,9 @@ const RegisterPage = () => {
                       id="password"
                       type="password"
                       placeholder="Create a password"
-                      value={user.password}
+                      value={newUser.password}
                       onChange={(e) =>
-                        setUser({ ...user, password: e.target.value })
+                        setNewUser({ ...newUser, password: e.target.value })
                       }
                       required
                     />

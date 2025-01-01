@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import {
   Menu,
   X,
@@ -14,7 +15,6 @@ import {
   Zap,
   Heart,
   User,
-  Bell,
 } from "lucide-react";
 
 import { Cart } from "./Cart";
@@ -24,14 +24,32 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import UserProfileMenu from "./UserProfileMenu";
 import { logout } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import TooltipShow from "./TooltipShow";
 
 const Header = () => {
+  // ---------------- redux --------------------
+  const currentLoggedInUser = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+
+  // ---------------- react --------------------
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { comparedProducts } = useComparison();
   const { wishlist } = useWishlist();
+  const [isMounted, setIsMounted] = useState(false);
 
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+  // handle search product
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -41,11 +59,9 @@ const Header = () => {
 
   // handle logout user
   const handleLogout = () => {
-    //  lgout
+    dispatch(logout());
+    router.push("/");
   };
-
-  const isLoggedIn = true;
-  const user = { profilePicture: "" };
 
   return (
     <header className="bg-white shadow-md">
@@ -78,23 +94,46 @@ const Header = () => {
 
         {/* nav items  */}
         <nav className="hidden md:flex items-center space-x-4">
+          {/* flash sale  */}
           <Link
             href="/flash-sale"
-            className="text-gray-600 hover:text-blue-600"
+            className={` ${
+              pathname === "/flash-sale" ? "text-blue-600" : "text-gray-600"
+            } hover:text-blue-600`}
           >
             <Zap className="h-4 w-4 inline-block mr-1" />
             Flash Sale
           </Link>
-          <Link href="/compare" className="text-gray-600 hover:text-blue-600">
-            <BarChart2 className="h-4 w-4 inline-block mr-1" />(
-            {comparedProducts.length})
-          </Link>
-          <Link href="/wishlist" className="text-gray-600 hover:text-blue-600">
-            <Heart className="h-4 w-4 inline-block mr-1" />({wishlist.length})
-          </Link>
+
+          {/* compare  */}
+          <TooltipShow content="Compare product">
+            <Link
+              href="/compare"
+              className={` ${
+                pathname === "/compare" ? "text-blue-600" : "text-gray-600"
+              } hover:text-blue-600`}
+            >
+              <BarChart2 className="h-4 w-4 inline-block mr-1" />(
+              {comparedProducts.length})
+            </Link>
+          </TooltipShow>
+
+          {/* wishlist  */}
+          <TooltipShow content="Your wishlist">
+            <Link
+              href="/wishlist"
+              className={`hover:text-blue-600 ${
+                pathname === "/wishlist"
+                  ? "text-blue-600 font-bold"
+                  : "text-gray-600"
+              }`}
+            >
+              <Heart className="h-4 w-4 inline-block mr-1" />({wishlist.length})
+            </Link>
+          </TooltipShow>
           <Cart />
           {/* open menu when user is logged in  */}
-          {isLoggedIn ? (
+          {currentLoggedInUser ? (
             <>
               <Button onClick={handleLogout} className="mx-2">
                 Log out
@@ -106,8 +145,8 @@ const Header = () => {
                   <Avatar>
                     <AvatarImage
                       src={
-                        user?.profilePicture
-                          ? user.profilePicture
+                        currentLoggedInUser?.profilePicture
+                          ? currentLoggedInUser?.profilePicture
                           : "https://d22e6o9mp4t2lx.cloudfront.net/cms/pfp3_d7855f9562.webp"
                       }
                       alt="@shadcn"

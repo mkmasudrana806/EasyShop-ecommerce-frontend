@@ -30,29 +30,29 @@ const ProductCard = ({
     useComparison();
 
   const handleCompareToggle = () => {
-    if (isInComparison(product._id)) {
-      removeFromComparison(product._id);
+    if (isInComparison(product?._id)) {
+      removeFromComparison(product?._id);
     } else {
       addToComparison(product);
     }
   };
 
   const handleWishlistToggle = () => {
-    if (isInWishlist(product._id)) {
-      removeFromWishlist(product._id);
+    if (isInWishlist(product?._id)) {
+      removeFromWishlist(product?._id);
     } else {
       addToWishlist(product);
     }
   };
 
   return (
-    <Card key={product._id} className="flex flex-col">
+    <Card key={product?._id} className="flex flex-col">
       <CardContent className="p-4 flex-grow">
         <div className="relative">
-          <Link href={`/products/${product._id}`}>
+          <Link href={`/products/${product?._id}`}>
             <Image
-              src={product.images[0]}
-              alt={product.name}
+              src={product?.images[0]}
+              alt={product?.name}
               width={200}
               height={200}
               className="w-full h-48 object-cover rounded-t-lg"
@@ -66,7 +66,7 @@ const ProductCard = ({
             <Heart
               onClick={handleWishlistToggle}
               className={`h-6 w-6 ${
-                isInWishlist(product._id)
+                isInWishlist(product?._id)
                   ? "text-red-500 fill-current"
                   : "text-gray-500"
               }`}
@@ -75,7 +75,7 @@ const ProductCard = ({
               <BarChart2
                 onClick={handleCompareToggle}
                 className={`h-6 w-6 ${
-                  isInComparison(product._id)
+                  isInComparison(product?._id)
                     ? "text-red-500 fill-current"
                     : "text-gray-500"
                 }`}
@@ -83,10 +83,10 @@ const ProductCard = ({
             )}
           </Button>
         </div>
-        <h2 className="text-xl font-semibold mt-4">{product.name}</h2>
-        <p className="text-gray-600">${product.price.toFixed(2)}</p>
+        <h2 className="text-xl font-semibold mt-4">{product?.name}</h2>
+        <p className="text-gray-600">${product?.price.toFixed(2)}</p>
         <Badge variant="secondary" className="mt-2">
-          {product.category}
+          {product?.category}
         </Badge>
       </CardContent>
       <CardFooter>
@@ -94,20 +94,20 @@ const ProductCard = ({
         {behaviour === "productCard" ? (
           <div className="flex flex-col w-full gap-2">
             <Button className="w-full">Add to Cart</Button>
-            <QuickView product={product} key={product._id} />
+            <QuickView product={product} key={product?._id} />
           </div>
         ) : (
           <div className="flex flex-col w-full gap-2">
             <Button asChild className="w-full">
-              <Link href={`/products/${product._id}`}>View Product</Link>
+              <Link href={`/products/${product?._id}`}>View Product</Link>
             </Button>
             <Button
-              variant={isInComparison(product._id) ? "secondary" : "outline"}
+              variant={isInComparison(product?._id) ? "secondary" : "outline"}
               className="w-full"
               onClick={handleCompareToggle}
             >
               <BarChart2 className="mr-2 h-4 w-4" />
-              {isInComparison(product._id)
+              {isInComparison(product?._id)
                 ? "Remove from Compare"
                 : "Add to Compare"}
             </Button>
