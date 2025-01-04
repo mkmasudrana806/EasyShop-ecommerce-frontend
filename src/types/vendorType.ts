@@ -1,15 +1,14 @@
-import { TUser } from "./userType";
 
 // social link
 export type TSocialLink = {
-  socialName: string;
-  socialLink: string;
+  platform: string;
+  url: string;
 };
 
 // vendor
 export type TVendor = {
   _id: string;
-  user: TUser;
+  user: string;
   vendor: string;
   shopName: string;
   logo: string;
@@ -17,7 +16,7 @@ export type TVendor = {
   address: string;
   contact: string;
   socialLinks: TSocialLink[];
-  followers?: string[];
+  followers: string[];
   status: "active" | "blocked";
   avgRating: number;
   productCount: number;

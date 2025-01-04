@@ -63,6 +63,16 @@ const productApi = baseApi.injectEndpoints({
       ],
     }),
 
+    // --------- get vendor products
+    getVendorProducts: builder.query({
+      query: (vendorId) => {
+        return { url: `/products/vendor/${vendorId}` };
+      },
+      providesTags: (_result, _error, arg) => [
+        { type: "vendor-products", id: arg },
+      ],
+    }),
+
     // ---------- load single product
     getProductById: builder.query({
       query: (id) => ({
@@ -102,9 +112,8 @@ export const {
   useCreateProductMutation,
   useLoadAllProductsQuery,
   useGetUserProductsQuery,
+  useGetVendorProductsQuery,
   useGetProductByIdQuery,
   useDeleteProductMutation,
   useUpdateProductMutation,
 } = productApi;
-
- 

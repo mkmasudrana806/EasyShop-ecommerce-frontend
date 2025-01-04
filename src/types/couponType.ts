@@ -23,4 +23,5 @@ export type TCouponResult = {
   isValid: boolean;
   discount: number;
   finalTotal: number;
+  couponCode: string;
 };

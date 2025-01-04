@@ -26,7 +26,6 @@ const Navbar = () => {
   const [hasMounted, setHasMounted] = useState(false);
   const dispatch = useAppDispatch();
 
-  // console.log("product: ", products);
   // Ensure that the component has mounted on the client side
   useEffect(() => {
     setHasMounted(true);

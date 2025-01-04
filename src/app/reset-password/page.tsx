@@ -16,6 +16,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Check, OctagonAlert } from "lucide-react";
 import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
+import { ErrorResponse } from "@/types/ErrorResponse";
 
 // --------------- reset password
 const ResetPassword = () => {
@@ -56,10 +57,11 @@ const ResetPassword = () => {
         }, 2000);
       }
     } catch (error) {
-      console.error(error);
       setAlert({
         type: "error",
-        message: "Failed to reset password. Please try again.",
+        message:
+          (error as ErrorResponse).data?.errorSources[0].message ||
+          "Failed to reset password. Please try again.",
       });
     } finally {
       setIsLoading(false);

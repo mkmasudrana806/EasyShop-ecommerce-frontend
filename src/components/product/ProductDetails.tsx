@@ -1,16 +1,9 @@
 "use client";
 
-// import { useState } from "react";
 import Image from "next/image";
-// import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
 import { ShoppingCart, Gift } from "lucide-react";
-// import { useGetProductByIdQuery } from "@/redux/features/products/productApi";
-// import Loading from "@/components/message/Loading";
-// import { useRecentlyViewed } from "@/components/contexts/RecentlyViewedContext";
-
 import { useEffect, useState } from "react";
 import Loading from "../message/Loading";
 import { TProduct } from "@/types/productType";
@@ -18,10 +11,8 @@ import Link from "next/link";
 import Rating from "../Rating";
 import { useGetReviewsOfProductQuery } from "@/redux/features/reviews/reviewsApi";
 import { TReview } from "@/types/reviewType";
-// import { ReviewSystem } from "@/components/ReviewSystem";
-// import { ProductRecommendations } from "@/components/ProductRecommendations";
-// import ProductDetails from "@/components/product/ProductDetails";
-// import { RecentlyViewedProducts } from "@/components/product/RecentlyViewedProducts";
+import { useAddToCart } from "@/utils/useAddToCart";
+import VendorMismatchModal from "../VendorMismatchModal";
 
 const ProductDetails = ({
   product,
@@ -46,22 +37,21 @@ const ProductDetails = ({
   const [quantity, setQuantity] = useState(1);
   const [discountedPrice, setDiscountedPrice] = useState(0);
 
+  const { handleAddToCart, isModalOpen, handleModalChoice, setIsModalOpen } =
+    useAddToCart();
+
   // initial load discountPrice and mainImage
   useEffect(() => {
     setDiscountedPrice(product?.flashSalePrice);
     setMainImage(product?.images[0]);
   }, [product]);
 
-  // const { addToRecentlyViewed } = useRecentlyViewed();
-
+ 
   if (isLoading) {
     return <Loading />;
   }
 
-  const handleAddToCart = () => {
-    // Here you would typically update the cart state or send a request to your backend
-  };
-
+ 
   return (
     <div className="grid md:grid-cols-2 gap-8">
       {/* images  */}
@@ -128,6 +118,7 @@ const ProductDetails = ({
           <Badge variant="secondary">{product.category}</Badge>
         </div>
 
+        {/* cart quantity  */}
         <div className="flex items-center gap-4 mb-4">
           <label htmlFor="quantity" className="font-medium">
             Quantity:
@@ -137,12 +128,18 @@ const ProductDetails = ({
             id="quantity"
             min="1"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={(e) => {
+              setQuantity(Number(e.target.value));
+              handleAddToCart(product, Number(e.target.value));
+            }}
             className="w-16 p-2 border rounded"
           />
         </div>
 
-        <Button onClick={handleAddToCart} className="w-full my-4">
+        <Button
+          onClick={() => handleAddToCart(product, quantity)}
+          className="w-full my-4"
+        >
           <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
         </Button>
 
@@ -175,6 +172,12 @@ const ProductDetails = ({
           </div>
         </Link>
       </div>
+
+      <VendorMismatchModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleModalChoice}
+      />
     </div>
   );
 };

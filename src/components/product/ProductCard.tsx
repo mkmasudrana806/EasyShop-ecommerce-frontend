@@ -9,6 +9,8 @@ import { BarChart2, Heart } from "lucide-react";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useComparison } from "../contexts/ComparisonContext";
 import { QuickView } from "./QuickView";
+import { useAddToCart } from "@/utils/useAddToCart";
+import VendorMismatchModal from "../VendorMismatchModal";
 
 /**
  *
@@ -16,7 +18,6 @@ import { QuickView } from "./QuickView";
  * @param behaviour behaviour of the card for different use cases
  * example: card for product, card for recently viewed product, card for recommended product
  */
-
 const ProductCard = ({
   product,
   behaviour,
@@ -24,11 +25,14 @@ const ProductCard = ({
   product: any;
   behaviour?: "productCard" | "recentlyViewed" | "recommended" | "wishlist";
 }) => {
+  // ---------------- react ----------------
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-
   const { addToComparison, isInComparison, removeFromComparison } =
     useComparison();
+  const { handleAddToCart, isModalOpen, handleModalChoice, setIsModalOpen } =
+    useAddToCart();
 
+  // handle compare toggle
   const handleCompareToggle = () => {
     if (isInComparison(product?._id)) {
       removeFromComparison(product?._id);
@@ -37,6 +41,7 @@ const ProductCard = ({
     }
   };
 
+  // handle wishlist toggle
   const handleWishlistToggle = () => {
     if (isInWishlist(product?._id)) {
       removeFromWishlist(product?._id);
@@ -93,7 +98,12 @@ const ProductCard = ({
         {/* button for product card  */}
         {behaviour === "productCard" ? (
           <div className="flex flex-col w-full gap-2">
-            <Button className="w-full">Add to Cart</Button>
+            <Button
+              onClick={() => handleAddToCart(product, 1)}
+              className="w-full"
+            >
+              Add to Cart
+            </Button>
             <QuickView product={product} key={product?._id} />
           </div>
         ) : (
@@ -114,6 +124,11 @@ const ProductCard = ({
           </div>
         )}
       </CardFooter>
+      <VendorMismatchModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleModalChoice}
+      />
     </Card>
   );
 };

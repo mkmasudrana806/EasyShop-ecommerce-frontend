@@ -26,6 +26,16 @@ const reviewApi = baseApi.injectEndpoints({
         { type: "reviews-product", id: arg },
       ],
     }),
+
+    // ---------- get reviews of a vendor
+    getReviewsOfVendor: builder.query({
+      query: (productId) => {
+        return { url: `/reviews/product-reviews/${productId}` };
+      },
+      providesTags: (_result, _error, arg) => [
+        { type: "reviews-product", id: arg },
+      ],
+    }),
   }),
 });
 

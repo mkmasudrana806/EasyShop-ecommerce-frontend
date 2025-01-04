@@ -4,15 +4,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import { useApplyCouponMutation } from "@/redux/features/coupons/couponApi";
 import { ErrorResponse } from "@/types/ErrorResponse";
-import { TApplyCoupon, TCouponResult } from "@/types/couponType";
+import { TCouponResult } from "@/types/couponType";
 
 interface CouponSystemProps {
   vendorId: string;
   cartTotal: number;
-  onCouponApplied: (vendorDiscount: number, globalDiscount: number) => void;
+  onCouponApplied: (couponResult: TCouponResult) => void;
 }
 
 export function CouponSystem({
@@ -36,12 +36,14 @@ export function CouponSystem({
 
     const couponInfo = {
       code: couponCode,
-      cartTotal: 2000,
+      cartTotal: cartTotal,
       vendorId,
+      
     };
     try {
       const result = await applyCoupon(couponInfo).unwrap();
       setCouponStatus(result.data);
+      onCouponApplied(result.data); // callback to pass data to parent component
     } catch (err) {
       (err as ErrorResponse).data.errorSources.forEach((err) => {
         setError((prevErrors) => [...prevErrors, err.message]);
@@ -71,14 +73,16 @@ export function CouponSystem({
         </Button>
       </div>
 
+      {/* coupon status  */}
       {couponStatus?.isValid && (
-        <Alert className="mt-2 bg-green-50 text-green-600 border-green-300">
-          <CheckCircle2 className="h-4 w-4" />
-          <AlertDescription>Coupon applied successfully!</AlertDescription>
-        </Alert>
+        <h1 className="text-gray-500 mt-3">
+          Coupon <strong>{couponCode}</strong> applied successfully!
+        </h1>
       )}
+
+      {/* coupon error  */}
       {error.length > 0 && (
-        <Alert className="mt-2 bg-red-50 text-red-800 border-red-300">
+        <Alert className="mt-3 bg-red-50 text-red-800 border-red-300">
           <XCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>

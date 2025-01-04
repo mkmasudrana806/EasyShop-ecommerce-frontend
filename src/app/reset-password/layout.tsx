@@ -3,9 +3,9 @@ import React, { Suspense } from "react";
 
 // meta data
 export const metadata = {
-  title: "Travel Tips And Destination Guides | Reset Password",
+  title: "Easy Shop | Reset Password",
   description:
-    "Travel Tips And Destination Guides, Reset Password. User can reset their Password by using this page",
+    "Easy Shop, Reset Password. User can reset their Password by using this page",
 };
 
 // ------------ reset password password page

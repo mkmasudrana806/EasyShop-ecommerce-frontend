@@ -10,7 +10,7 @@ export default function ReturnsExchangesPage() {
           <CardTitle>Returns and Exchanges Policy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p>At EasyShop, we want you to be completely satisfied with your purchase. If you're not happy with your order, we're here to help. Please review our returns and exchanges policy below.</p>
+          <p>At EasyShop, we want you to be completely satisfied with your purchase. If you&apos;re not happy with your order, we&apos;re here to help. Please review our returns and exchanges policy below.</p>
           
           <h2 className="text-xl font-semibold mt-4">Return Policy</h2>
           <ul className="list-disc list-inside space-y-2">
@@ -46,11 +46,11 @@ export default function ReturnsExchangesPage() {
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold">Q: Can I return a gift?</h3>
-                    <p>A: Yes, you can return a gift for store credit or exchange. You'll need the order number or gift receipt.</p>
+                    <p>A: Yes, you can return a gift for store credit or exchange. You&apos;ll need the order number or gift receipt.</p>
                   </div>
                   <div>
                     <h3 className="font-semibold">Q: What if my item is defective?</h3>
-                    <p>A: If you receive a defective item, please contact our customer service team immediately. We'll arrange for a return or replacement at no cost to you.</p>
+                    <p>A: If you receive a defective item, please contact our customer service team immediately. We&apos;ll arrange for a return or replacement at no cost to you.</p>
                   </div>
                   <div>
                     <h3 className="font-semibold">Q: Do you offer free returns?</h3>
@@ -61,7 +61,7 @@ export default function ReturnsExchangesPage() {
             </AccordionItem>
           </Accordion>
           
-          <p className="mt-8">If you have any questions about our returns and exchanges policy, please don't hesitate to contact our customer service team at support@easyshop.com or call us at 1-800-EASYSHOP.</p>
+          <p className="mt-8">If you have any questions about our returns and exchanges policy, please don&apos;t hesitate to contact our customer service team at support@easyshop.com or call us at 1-800-EASYSHOP.</p>
         </CardContent>
       </Card>
     </div>

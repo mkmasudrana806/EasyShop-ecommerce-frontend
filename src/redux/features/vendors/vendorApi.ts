@@ -82,7 +82,8 @@ const vendorApi = baseApi.injectEndpoints({
       query: (id) => ({
         url: `/vendors/${id}`,
       }),
-      providesTags: (_result, _error, arg) => [{ type: "vendor", id: arg.id }],
+
+      providesTags: (_result, _error, arg) => [{ type: "vendor", id: arg }],
     }),
 
     // ---------- update single vendor
@@ -98,6 +99,19 @@ const vendorApi = baseApi.injectEndpoints({
         { type: "vendor", id: arg.vendorId },
       ],
     }),
+
+    // ---------- follow or unfollow a vendor
+    followUnfollowVendor: builder.mutation({
+      query: (vendorId) => {
+        return {
+          url: `/vendors/follow-unfollow/${vendorId}`,
+          method: "PATCH",
+        };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: "vendor", id: arg },
+      ],
+    }),
   }),
 });
 
@@ -105,7 +119,6 @@ export const {
   useCreateVendorMutation,
   useLoadAllVendorsQuery,
   useGetVendorByIdQuery,
+  useFollowUnfollowVendorMutation,
   useUpdateVendorMutation,
 } = vendorApi;
-
- 

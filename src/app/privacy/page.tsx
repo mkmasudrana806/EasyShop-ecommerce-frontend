@@ -30,7 +30,7 @@ export default function PrivacyPolicyPage() {
           <p>Our website may contain links to third-party websites. We have no control over the content and practices of these sites and cannot accept responsibility for their respective privacy policies.</p>
           
           <h2 className="text-xl font-semibold mt-4">7. Changes to This Policy</h2>
-          <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.</p>
+          <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.</p>
           
           <h2 className="text-xl font-semibold mt-4">8. Contact Us</h2>
           <p>If you have any questions about this Privacy Policy, please contact us at privacy@easyshop.com.</p>

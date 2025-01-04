@@ -10,7 +10,7 @@ import DataNotFound from "@/components/message/DataNotFound";
 import Loading from "@/components/message/Loading";
 import ErrorComponent from "@/components/message/ErrorComponent";
 
-export default function VendorsLists() {
+const VendorsLists = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const vendorsPerPage = 8;
@@ -71,6 +71,8 @@ export default function VendorsLists() {
 
       {/* content for vendors  */}
       {content}
+
+      {/* pagination  */}
       {filteredVendors.length > vendorsPerPage && (
         <div className="flex justify-center mt-8">
           {Array.from(
@@ -90,4 +92,6 @@ export default function VendorsLists() {
       )}
     </div>
   );
-}
+};
+
+export default VendorsLists;

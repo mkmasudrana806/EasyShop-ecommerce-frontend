@@ -3,9 +3,9 @@ import React from "react";
 
 // meta data
 export const metadata = {
-  title: "Travel Tips And Destination Guides | Unauthorized",
+  title: "Easy Shop | Unauthorized",
   description:
-    "Travel Tips And Destination Guides, Unauthorized page show for unauthorized users access unappropiate content they don't belong to it",
+    "Easy Shop, Unauthorized page show for unauthorized users access unappropiate content they don't belong to it",
 };
 
 // ---------------- unauthorized page

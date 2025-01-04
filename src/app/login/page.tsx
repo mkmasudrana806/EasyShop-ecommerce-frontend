@@ -23,9 +23,7 @@ import { setUser } from "@/redux/features/auth/authSlice";
 import SuccessAlert from "@/components/message/SuccessAlert";
 import ErrorAlert from "@/components/message/ErrorAlert";
 import { ErrorResponse } from "@/types/ErrorResponse";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Url } from "next/dist/shared/lib/router/router";
-import Loading from "@/components/message/Loading";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // ------------- login page  --------------------
 function LoginPage() {
@@ -89,7 +87,7 @@ function LoginPage() {
 
       setSuccessMessage("Login successful! Redirecting to home page...");
       setTimeout(() => {
-        router.push("/");
+        router.replace(from);
       }, 1000);
     } catch (err) {
       (err as ErrorResponse).data?.errorSources?.forEach((err) => {

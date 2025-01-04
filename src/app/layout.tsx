@@ -10,6 +10,7 @@ import { WishlistProvider } from "@/components/contexts/WishlistContext";
 import { RecentlyViewedProvider } from "@/components/contexts/RecentlyViewedContext";
 import { TopNavigation } from "@/components/TopNavigation";
 import ScrollToTop from "@/components/ScrollToTop";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,6 +38,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body>
+          <Toaster />
           <ComparisonProvider>
             <WishlistProvider>
               <RecentlyViewedProvider>
@@ -46,7 +48,7 @@ export default function RootLayout({
                   <ScrollToTop />
                   <Header />
                   <TopNavigation />
-                  <main className="flex-grow  ">{children}</main>
+                  <main className="flex-grow">{children}</main>
                   <Footer />
                 </div>
               </RecentlyViewedProvider>

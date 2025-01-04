@@ -3,11 +3,10 @@ import React, { Suspense } from "react";
 
 // meta data
 export const metadata = {
-  title: "Travel Tips And Destination Guides | User Dashboard",
+  title: "Easy Shop | User Dashboard",
   description:
-    "Travel Tips And Destination Guides, User Dashboard. here user will get valueable insight about their profile and activities",
+    "Easy Shop, User Dashboard. here user will get valueable insight about their profile and activities",
 };
-
 
 // ------------ reset password password page
 const layout = ({ children }: { children: React.ReactNode }) => {

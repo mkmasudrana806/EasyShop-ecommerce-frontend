@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, X } from "lucide-react";
@@ -13,47 +12,53 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
-// Dummy cart data (in a real app, this would come from your state management solution)
-const initialCartItems = [
-  {
-    id: "1",
-    name: "Wireless Earbuds",
-    price: 79.99,
-    quantity: 1,
-    image:
-      "https://d3gjxtgqyywct8.cloudfront.net/o2o/image/8449e8eb-734d-4fcb-bbd0-5805dcffa3b8.jpg?height=100&width=100",
-  },
-  {
-    id: "2",
-    name: "Smart Watch",
-    price: 199.99,
-    quantity: 1,
-    image:
-      "https://d3gjxtgqyywct8.cloudfront.net/o2o/image/8449e8eb-734d-4fcb-bbd0-5805dcffa3b8.jpg?height=100&width=100",
-  },
-];
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  removeCartItem,
+  updateCartQuantity,
+} from "@/redux/features/contexts/cartsSlice";
+import { TCartItem } from "@/types/cartType";
+import { useRouter } from "next/navigation";
 
 export function Cart() {
-  const [cartItems, setCartItems] = useState(initialCartItems);
-
-  const removeFromCart = (id: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
+  // ----------------- redux --------------------
+  const cartItems = useAppSelector((state) => state.carts.items);
+  const dispatch = useAppDispatch();
+  const userId = useAppSelector((state) => state.auth.user?.userId);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const router = useRouter();
 
+  // handle update cart quantity
+  const handleUpdateCartQuantity = (id: string, quantity: number) => {
+    dispatch(updateCartQuantity({ id, quantity }));
+  };
+
+  // handle remove cart item
+  const handleRemoveCartItem = (id: string) => {
+    dispatch(removeCartItem(id));
+  };
+
+  // decide to render cart button content
+  let cartBtnContent = null;
+  if (cartItems.length > 0) {
+    cartBtnContent = userId ? (
+      <Link href="/checkout">Proceed to Checkout</Link>
+    ) : (
+      <button onClick={() => router.push(`/login?from=/checkout`)}>
+        Login to Checkout
+      </button>
+    );
+  } else {
+    cartBtnContent = (
+      <p className={`${cartItems.length === 0 ? "cursor-not-allowed" : ""}`}>
+        Your cart is empty
+      </p>
+    );
+  }
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -74,9 +79,9 @@ export function Cart() {
           </SheetDescription>
         </SheetHeader>
         <div className="mt-8">
-          {cartItems.map((item) => (
+          {cartItems.map((item: TCartItem) => (
             <div
-              key={item.id}
+              key={item._id}
               className="flex items-center justify-between py-4 border-b"
             >
               <div className="flex items-center">
@@ -100,14 +105,14 @@ export function Cart() {
                   min="1"
                   value={item.quantity}
                   onChange={(e) =>
-                    updateQuantity(item.id, Number(e.target.value))
+                    handleUpdateCartQuantity(item._id, Number(e.target.value))
                   }
                   className="w-16 p-1 border rounded mr-2"
                 />
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => handleRemoveCartItem(item._id)}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -118,7 +123,7 @@ export function Cart() {
         <div className="mt-4">
           <p className="text-lg font-bold">Total: ${total.toFixed(2)}</p>
           <Button className="w-full mt-4" asChild>
-            <Link href="/checkout">Proceed to Checkout</Link>
+            {cartBtnContent}
           </Button>
         </div>
       </SheetContent>

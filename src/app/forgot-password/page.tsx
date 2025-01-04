@@ -15,6 +15,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Check, OctagonAlert } from "lucide-react";
 import { useForgotPasswordMutation } from "@/redux/features/auth/authApi";
+import { ErrorResponse } from "@/types/ErrorResponse";
 
 // -------------- forgot password component
 const ForgotPassword = () => {
@@ -42,21 +43,22 @@ const ForgotPassword = () => {
           type: "success",
           message: "An reset email is sent to this email address",
         });
+        setEmailSent(true);
       }
     } catch (error) {
-      console.error(error);
       setAlert({
         type: "error",
-        message: "Failed to send reset password email",
+        message:
+          (error as ErrorResponse).data.errorSources[0].message ||
+          "Failed to send reset password email",
       });
     } finally {
       setIsLoading(false);
-      setEmailSent(true);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
+    <div className="flex items-center justify-center min-h-screen my-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>

@@ -13,9 +13,8 @@ import Link from "next/link";
 
 // meta data
 export const metadata = {
-  title: "Travel Tips And Destination Guides | About Us",
-  description:
-    "Travel Tips And Destination Guides About Us page give you clear instruction about us",
+  title: "Easy Shop | About Us",
+  description: "Easy Shop About Us page give you clear instruction about us",
 };
 
 // ----------------- about us page

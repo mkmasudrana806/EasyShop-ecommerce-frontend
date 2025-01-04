@@ -4,8 +4,6 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { TReview } from "@/types/reviewType";
 import {
   useCreateReviewMutation,
@@ -13,6 +11,7 @@ import {
 } from "@/redux/features/reviews/reviewsApi";
 import { ErrorResponse } from "@/types/ErrorResponse";
 import ErrorAlert from "./message/ErrorAlert";
+import ReviewCard from "./review/ReviewCard";
 
 interface ReviewSystemProps {
   productId: string;
@@ -33,10 +32,8 @@ export function ReviewSystem({ productId }: ReviewSystemProps) {
   // ---------------- handle submit review --------------------
   const handleSubmitReview = async () => {
     try {
-      const result = await createReview(newReview).unwrap();
-      console.log(result);
+     await createReview(newReview).unwrap();
     } catch (err) {
-      console.log(err);
       (err as ErrorResponse).data.errorSources.forEach((err) => {
         setError((prevErrors) => [...prevErrors, err.message]);
       });
@@ -71,32 +68,7 @@ export function ReviewSystem({ productId }: ReviewSystemProps) {
       {/* reviews containers  */}
       <div className="space-y-4 mb-8">
         {reviews?.data?.map((review: TReview) => (
-          <Card key={review._id}>
-            <CardContent className="p-4">
-              <div className="flex items-center mb-2">
-                <Avatar className="h-8 w-8 mr-2">
-                  <AvatarFallback>{review?.user?.name}</AvatarFallback>
-                </Avatar>
-                <span className="font-semibold">{review?.user?.name}</span>
-              </div>
-              <div className="flex items-center mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-4 w-4 ${
-                      star <= review.rating
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
-                <span className="ml-2 text-sm text-gray-600">
-                  {new Date(review?.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              <p>{review.comment}</p>
-            </CardContent>
-          </Card>
+          <ReviewCard key={review._id} review={review} />
         ))}
       </div>
 
